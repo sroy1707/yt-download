@@ -1,0 +1,73 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Downloader</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube Video Downloader</h1>
+        <form method="POST">
+            <label for="video_urls">Enter YouTube Video URLs (comma-separated):</label><br>
+            <textarea name="video_urls" id="video_urls" rows="4" cols="50"></textarea><br><br>
+            <button type="submit">Download</button>
+        </form>
+        <div class="messages">
+            {% if messages %}
+                <h2>Download Results:</h2>
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Downloader</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        function startProgress() {
+            const progressDisplay = document.getElementById('progress');
+            const eventSource = new EventSource('/progress');
+
+            eventSource.onmessage = function(event) {
+                progressDisplay.textContent = 'Download Progress: ' + event.data;
+            };
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube Video Downloader</h1>
+        <form method="POST" onsubmit="startProgress()">
+            <label for="video_urls">Enter YouTube Video URLs (comma-separated):</label><br>
+            <textarea name="video_urls" id="video_urls" rows="4" cols="50"></textarea><br><br>
+            <label for="download_path">Enter Download Path:</label><br>
+            <input type="text" name="download_path" id="download_path" placeholder="e.g., /path/to/save/videos"><br><br>
+            <button type="submit">Download</button>
+        </form>
+        <div id="progress" class="progress">Download Progress: Waiting...</div>
+        <div class="messages">
+            {% if messages %}
+                <h2>Download Results:</h2>
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
