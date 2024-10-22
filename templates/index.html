@@ -1,66 +1,54 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Video Downloader</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>YouTube Video Downloader</h1>
-        <form method="POST">
-            <label for="video_urls">Enter YouTube Video URLs (comma-separated):</label><br>
-            <textarea name="video_urls" id="video_urls" rows="4" cols="50"></textarea><br><br>
-            <button type="submit">Download</button>
-        </form>
-        <div class="messages">
-            {% if messages %}
-                <h2>Download Results:</h2>
-                <ul>
-                    {% for message in messages %}
-                        <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-    </div>
-</body>
-</html> -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Video Downloader</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .messages {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+    <script type="text/javascript">
         function startProgress() {
-            const progressDisplay = document.getElementById('progress');
-            const eventSource = new EventSource('/progress');
-
-            eventSource.onmessage = function(event) {
-                progressDisplay.textContent = 'Download Progress: ' + event.data;
+            const eventSource = new EventSource("/progress");
+            eventSource.onmessage = function (event) {
+                const progressElement = document.getElementById("progress");
+                progressElement.innerText = event.data;
             };
         }
     </script>
 </head>
-<body>
+<body onload="startProgress()">
     <div class="container">
         <h1>YouTube Video Downloader</h1>
-        <form method="POST" onsubmit="startProgress()">
-            <label for="video_urls">Enter YouTube Video URLs (comma-separated):</label><br>
-            <textarea name="video_urls" id="video_urls" rows="4" cols="50"></textarea><br><br>
-            <label for="download_path">Enter Download Path:</label><br>
-            <input type="text" name="download_path" id="download_path" placeholder="e.g., /path/to/save/videos"><br><br>
+        <form method="POST">
+            <label for="video_urls">YouTube Video URLs (comma-separated):</label><br>
+            <input type="text" id="video_urls" name="video_urls" style="width: 100%;" required><br><br>
+
+            <label for="custom_names">Custom Video Names (comma-separated, match URLs order):</label><br>
+            <input type="text" id="custom_names" name="custom_names" style="width: 100%;" required><br><br>
+
+            <label for="download_path">Download Path:</label><br>
+            <input type="text" id="download_path" name="download_path" style="width: 100%;" required><br><br>
+
             <button type="submit">Download</button>
         </form>
-        <div id="progress" class="progress">Download Progress: Waiting...</div>
+
         <div class="messages">
+            <h3>Download Status:</h3>
+            <pre id="progress">Waiting for download...</pre>
             {% if messages %}
-                <h2>Download Results:</h2>
                 <ul>
                     {% for message in messages %}
                         <li>{{ message }}</li>
