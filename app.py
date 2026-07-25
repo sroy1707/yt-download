@@ -141,6 +141,24 @@ try:
     @app.route('/progress')
     def progress():
         return Response(generate_sse_progress(), mimetype='text/event-stream')
+ 
+    @app.route('/api/download_file/<download_id>')
+    def download_file_route(download_id):
+        from services.downloader import download_progress, download_lock
+        from flask import send_file
+        import os
+ 
+        with download_lock:
+            item = download_progress.get(download_id)
+ 
+        if not item or item.get('status') != 'completed':
+            return jsonify({'success': False, 'message': 'File not found or download not completed.'}), 404
+ 
+        file_path = item.get('file_path')
+        if not file_path or not os.path.exists(file_path):
+            return jsonify({'success': False, 'message': 'File does not exist on server disk.'}), 404
+ 
+        return send_file(file_path, as_attachment=True)
 
     def open_browser():
         try:

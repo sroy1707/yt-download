@@ -33,6 +33,12 @@ function initApp() {
 
     // Light dismiss listener for dialogs
     setupDialogFallbacks();
+
+    // Auto-parse inputs if browser restored text in the input box on refresh
+    const textarea = document.getElementById('urls_input');
+    if (textarea && textarea.value.trim()) {
+        parseUrlsFromTextarea();
+    }
 }
 
 function setThemePalette(paletteName, element) {
@@ -423,6 +429,9 @@ function renderProgress(downloads) {
                         <button type="button" class="btn-secondary preview-video-btn" style="padding: 0.2rem 0.5rem; font-size: 0.74rem;" title="Watch Video">
                             ▶️ Preview
                         </button>
+                        <a class="btn-primary local-download-btn" style="padding: 0.2rem 0.5rem; font-size: 0.74rem; text-decoration: none; display:none; align-items: center; gap: 0.25rem;" title="Download file to your local computer">
+                            ⬇️ Save to PC
+                        </a>
                     </div>
                 </div>
                 <div class="error-box" style="display:none; color: var(--accent-error); font-size: 0.8rem; background: rgba(239,68,68,0.1); padding: 0.5rem; border-radius:6px; margin-top: 0.3rem;"></div>
@@ -450,6 +459,15 @@ function renderProgress(downloads) {
         previewBtn.onclick = () => {
             openVideoModal(dl.url);
         };
+
+        const localDownloadBtn = card.querySelector('.local-download-btn');
+        if (dl.status === 'completed') {
+            localDownloadBtn.style.display = 'inline-flex';
+            localDownloadBtn.href = `/api/download_file/${dl.id}`;
+            localDownloadBtn.setAttribute('download', '');
+        } else {
+            localDownloadBtn.style.display = 'none';
+        }
 
         const retryBtn = card.querySelector('.retry-btn');
         if (dl.status === 'error') {
@@ -561,14 +579,33 @@ async function loadQuickDirs() {
             }
             if (data.directories) {
                 const container = document.getElementById('quick-dirs-container');
-                container.innerHTML = '';
+                if (container) {
+                    container.innerHTML = '';
+                }
+                
+                const mainContainer = document.getElementById('quick-dirs-main-container');
+                if (mainContainer) {
+                    mainContainer.innerHTML = '';
+                }
+
                 data.directories.forEach(d => {
-                    const chip = document.createElement('button');
-                    chip.type = 'button';
-                    chip.className = 'chip-btn';
-                    chip.innerText = d.name;
-                    chip.onclick = () => loadDirectory(d.path);
-                    container.appendChild(chip);
+                    if (container) {
+                        const chip = document.createElement('button');
+                        chip.type = 'button';
+                        chip.className = 'chip-btn';
+                        chip.innerText = d.name;
+                        chip.onclick = () => loadDirectory(d.path);
+                        container.appendChild(chip);
+                    }
+
+                    if (mainContainer) {
+                        const mainChip = document.createElement('button');
+                        mainChip.type = 'button';
+                        mainChip.className = 'chip-btn';
+                        mainChip.innerText = d.name;
+                        mainChip.onclick = () => setDownloadPath(d.path);
+                        mainContainer.appendChild(mainChip);
+                    }
                 });
             }
         }

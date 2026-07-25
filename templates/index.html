@@ -60,31 +60,64 @@
             </div>
         </div>
 
-        <!-- 2-COLUMN SPLIT DASHBOARD GRID -->
-        <div class="dashboard-grid">
-
-            <!-- LEFT COLUMN: LINKS & QUEUE MANAGEMENT -->
-            <div class="dash-column">
-                
-                <!-- Destination Save Folder Banner -->
-                <div class="folder-banner">
-                    <div class="folder-info">
-                        <div class="folder-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                        </div>
-                        <div class="folder-details">
-                            <span class="folder-label">Destination Save Folder</span>
-                            <span class="folder-path" id="active-folder-display">Loading folder...</span>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-secondary" onclick="openFolderPicker()" style="padding: 0.45rem 0.85rem; font-size: 0.82rem;">
-                        Change Folder
-                    </button>
+        <!-- REAL-TIME ANALYTICS DASHBOARD ROW -->
+        <div class="analytics-row">
+            <!-- Speed & Completion Card -->
+            <div class="analytics-card card-speed">
+                <div class="analytics-icon">⚡</div>
+                <div class="analytics-info">
+                    <span class="analytics-label">Live Network Speed</span>
+                    <span class="analytics-value" id="analytics-total-speed">0 B/s</span>
+                    <span class="analytics-sub">Rate: <strong id="analytics-completion-rate">0%</strong></span>
                 </div>
+            </div>
 
-                <!-- Input & Links Card -->
+            <!-- Total Links Card -->
+            <div class="analytics-card">
+                <div class="analytics-icon" style="color: var(--brand-accent);">🔗</div>
+                <div class="analytics-info">
+                    <span class="analytics-label">Total Links</span>
+                    <span class="analytics-value" id="stat-total">0</span>
+                    <span class="analytics-sub">In Session</span>
+                </div>
+            </div>
+
+            <!-- Active Queue Card -->
+            <div class="analytics-card">
+                <div class="analytics-icon" style="color: var(--accent-warning);">⏳</div>
+                <div class="analytics-info">
+                    <span class="analytics-label">Active Downloads</span>
+                    <span class="analytics-value" id="stat-active" style="color: var(--accent-warning);">0</span>
+                    <span class="analytics-sub">Running Tasks</span>
+                </div>
+            </div>
+
+            <!-- Completed Card -->
+            <div class="analytics-card">
+                <div class="analytics-icon" style="color: var(--accent-success);">✅</div>
+                <div class="analytics-info">
+                    <span class="analytics-label">Completed</span>
+                    <span class="analytics-value" id="stat-completed" style="color: var(--accent-success);">0</span>
+                    <span class="analytics-sub">Successful</span>
+                </div>
+            </div>
+
+            <!-- Failed Card -->
+            <div class="analytics-card">
+                <div class="analytics-icon" style="color: var(--accent-error);">❌</div>
+                <div class="analytics-info">
+                    <span class="analytics-label">Failed / Errors</span>
+                    <span class="analytics-value" id="stat-failed" style="color: var(--accent-error);">0</span>
+                    <span class="analytics-sub">Error Logs</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN WORKSPACE 2-COLUMN GRID -->
+        <div class="workspace-grid">
+            
+            <!-- LEFT COLUMN: LINKS & QUALITY INPUT -->
+            <div class="dash-column">
                 <form onsubmit="startDownloads(event)">
                     <input type="hidden" id="download_path">
 
@@ -147,125 +180,100 @@
                 </form>
             </div>
 
-            <!-- RIGHT COLUMN: ANALYTICS & DOWNLOAD DASHBOARD -->
+            <!-- RIGHT COLUMN: SAVE CONFIGURATION CARD -->
             <div class="dash-column">
-
-                <!-- Real-Time Analytics Panel -->
-                <div class="card">
+                <div class="card" style="height: 100%;">
                     <div class="card-header">
                         <div class="card-title">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="18" y1="20" x2="18" y2="10"></line>
-                                <line x1="12" y1="20" x2="12" y2="4"></line>
-                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                             </svg>
-                            Real-Time Analytics & Metrics
+                            Save Location & Shortcuts
                         </div>
                     </div>
 
-                    <!-- Speed Gauge Banner -->
-                    <div class="speed-gauge-card">
-                        <div class="speed-info">
-                            <span style="font-size:0.72rem; color:var(--text-secondary); font-weight:700; text-transform:uppercase;">Live Network Speed</span>
-                            <div class="speed-meter">
-                                <span>⚡</span>
-                                <span id="analytics-total-speed">0 B/s</span>
+                    <!-- Destination Save Folder Banner -->
+                    <div class="folder-banner">
+                        <div class="folder-info">
+                            <div class="folder-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="folder-details">
+                                <span class="folder-label">Active Destination Path</span>
+                                <span class="folder-path" id="active-folder-display">Loading folder...</span>
                             </div>
                         </div>
-                        <div style="text-align: right;">
-                            <span style="font-size:0.72rem; color:var(--text-secondary); font-weight:700; text-transform:uppercase;">Completion Rate</span>
-                            <div style="font-family:'Outfit',sans-serif; font-size:1.4rem; font-weight:800; color:var(--accent-success);" id="analytics-completion-rate">0%</div>
+                        <button type="button" class="btn-secondary" onclick="openFolderPicker()" style="padding: 0.45rem 0.85rem; font-size: 0.82rem; white-space: nowrap;">
+                            Browse Custom
+                        </button>
+                    </div>
+
+                    <!-- Main Page Quick Save Location Chips -->
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.25rem;">
+                        <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em;">Quick Destination Shortcuts</span>
+                        <div class="quick-chips" id="quick-dirs-main-container" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            <!-- Filled dynamically via JS -->
                         </div>
                     </div>
 
-                    <!-- Analytics Grid -->
-                    <div class="analytics-panel">
-                        <div class="analytics-card">
-                            <div class="analytics-header">
-                                <span class="analytics-label">Total Links</span>
-                                <span>⚡</span>
-                            </div>
-                            <div class="analytics-value" id="stat-total">0</div>
-                            <span class="analytics-sub">In Session</span>
-                        </div>
-
-                        <div class="analytics-card">
-                            <div class="analytics-header">
-                                <span class="analytics-label">Active</span>
-                                <span>⏳</span>
-                            </div>
-                            <div class="analytics-value" id="stat-active" style="color:var(--accent-warning);">0</div>
-                            <span class="analytics-sub">Downloading</span>
-                        </div>
-
-                        <div class="analytics-card">
-                            <div class="analytics-header">
-                                <span class="analytics-label">Completed</span>
-                                <span>✅</span>
-                            </div>
-                            <div class="analytics-value" id="stat-completed" style="color:var(--accent-success);">0</div>
-                            <span class="analytics-sub">Finished</span>
-                        </div>
-
-                        <div class="analytics-card">
-                            <div class="analytics-header">
-                                <span class="analytics-label">Failed</span>
-                                <span>❌</span>
-                            </div>
-                            <div class="analytics-value" id="stat-failed" style="color:var(--accent-error);">0</div>
-                            <span class="analytics-sub">Errors</span>
-                        </div>
+                    <!-- Pro Help Tips -->
+                    <div style="margin-top: auto; padding: 0.85rem 1.15rem; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.78rem; line-height: 1.5; color: var(--text-secondary);">
+                        <strong style="color: var(--brand-color); display: block; margin-bottom: 0.25rem; font-size: 0.82rem;">💡 Pro-Tips for High-Speed Downloads:</strong>
+                        • Multiple links can be pasted in bulk (one URL per line).<br>
+                        • If age-restricted or private downloads fail, place a Netscape-format <code>cookies.txt</code> in the application folder.<br>
+                        • High-quality audio is automatically merged to MP3.
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Active Downloads Queue Card -->
-                <div class="card">
-                    <div class="dash-controls">
-                        <div class="card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                            </svg>
-                            Active Transfers
-                        </div>
-
-                        <div style="display: flex; gap: 0.4rem;">
-                            <button type="button" class="btn-secondary" onclick="retryAllFailed()" style="padding: 0.35rem 0.7rem; font-size: 0.78rem;" title="Retry all failed downloads">
-                                🔄 Retry Failed
-                            </button>
-                            <button type="button" class="btn-secondary" onclick="clearCompleted()" style="padding: 0.35rem 0.7rem; font-size: 0.78rem;" title="Clear completed downloads">
-                                Clear Completed
-                            </button>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <div class="filter-tabs">
-                            <button type="button" class="tab-btn active" onclick="setFilter('all', this)">All</button>
-                            <button type="button" class="tab-btn" onclick="setFilter('downloading', this)">Active</button>
-                            <button type="button" class="tab-btn" onclick="setFilter('completed', this)">Completed</button>
-                            <button type="button" class="tab-btn" onclick="setFilter('error', this)">Failed</button>
-                        </div>
-
-                        <div class="search-box">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            <input type="text" id="search-input" class="input-control" placeholder="Search..." oninput="onSearchInput()">
-                        </div>
-                    </div>
-
-                    <div id="no-downloads" class="empty-state">
-                        No active downloads. Paste YouTube URLs on the left and click <strong>Start Downloading Queue</strong>.
-                    </div>
-
-                    <div id="progress-cards" style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 420px; overflow-y: auto;">
-                        <!-- Download Transfer Cards rendered here -->
-                    </div>
+        <!-- BOTTOM: ACTIVE TRANSFERS QUEUE (FULL WIDTH) -->
+        <div class="card" style="margin-top: 0.5rem;">
+            <div class="dash-controls">
+                <div class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Active Transfers & Queue List
                 </div>
 
+                <div style="display: flex; gap: 0.4rem;">
+                    <button type="button" class="btn-secondary" onclick="retryAllFailed()" style="padding: 0.35rem 0.7rem; font-size: 0.78rem;" title="Retry all failed downloads">
+                        🔄 Retry Failed
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="clearCompleted()" style="padding: 0.35rem 0.7rem; font-size: 0.78rem;" title="Clear completed downloads">
+                        Clear Completed
+                    </button>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <div class="filter-tabs">
+                    <button type="button" class="tab-btn active" onclick="setFilter('all', this)">All</button>
+                    <button type="button" class="tab-btn" onclick="setFilter('downloading', this)">Active</button>
+                    <button type="button" class="tab-btn" onclick="setFilter('completed', this)">Completed</button>
+                    <button type="button" class="tab-btn" onclick="setFilter('error', this)">Failed</button>
+                </div>
+
+                <div class="search-box">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="search-input" class="input-control" placeholder="Search transfer queue..." oninput="onSearchInput()">
+                </div>
+            </div>
+
+            <div id="no-downloads" class="empty-state">
+                No active downloads. Paste YouTube URLs above and click <strong>Start Downloading Queue</strong>.
+            </div>
+
+            <div id="progress-cards" style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 500px; overflow-y: auto;">
+                <!-- Download Transfer Cards rendered here -->
             </div>
         </div>
     </div>

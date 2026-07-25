@@ -44,20 +44,9 @@ def normalize_youtube_url(url):
     return url
 
 def apply_cookie_settings(ydl_opts):
-    """Apply cookies.txt or try auto browser cookies if available."""
-    # 1. High Priority: cookies.txt file in working directory
+    """Apply cookies.txt if available."""
     if os.path.exists(Config.COOKIES_FILE):
         ydl_opts['cookiefile'] = Config.COOKIES_FILE
-        return
-
-    # 2. Try browser cookies
-    browsers = ['chrome', 'firefox', 'edge', 'brave', 'opera', 'safari']
-    for b in browsers:
-        try:
-            ydl_opts['cookiesfrombrowser'] = (b,)
-            return
-        except Exception:
-            pass
 
 def fetch_video_metadata(url):
     """Fetch video metadata using YouTube oEmbed endpoint with yt_dlp fallback."""
@@ -88,11 +77,6 @@ def fetch_video_metadata(url):
             'quiet': True,
             'no_warnings': True,
             'extract_flat': True,
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['android', 'mweb', 'web']
-                }
-            },
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -142,18 +126,12 @@ def run_download_thread(download_id, video_url, download_path, thumbnail='', qua
 
         ydl_opts = {
             'format': format_str,
-            'merge_output_format': 'mp4',
             'progress_hooks': [make_progress_hook(download_id)],
             'outtmpl': outtmpl,
             'quiet': True,
             'no_warnings': True,
             'geo_bypass': True,
             'nocheckcertificate': True,
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['android', 'mweb', 'web']
-                }
-            },
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -183,7 +161,8 @@ def run_download_thread(download_id, video_url, download_path, thumbnail='', qua
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(video_url, download=True)
             extracted_title = info.get('title', '') if info else ''
-
+            final_filename = info.get('_filename') if info else None
+ 
             with download_lock:
                 if download_id in download_progress:
                     download_progress[download_id]['status'] = 'completed'
@@ -192,6 +171,8 @@ def run_download_thread(download_id, video_url, download_path, thumbnail='', qua
                     download_progress[download_id]['speed'] = '0 B/s'
                     if extracted_title:
                         download_progress[download_id]['custom_title'] = extracted_title
+                    if final_filename:
+                        download_progress[download_id]['file_path'] = final_filename
 
     except Exception as e:
         error_msg = clean_ansi(str(e))
